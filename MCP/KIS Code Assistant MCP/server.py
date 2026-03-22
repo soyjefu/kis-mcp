@@ -810,6 +810,30 @@ def main():
             "version": "0.1.0"
         })
 
+    # OAuth metadata endpoints - required for Claude Code MCP client compatibility
+    # Returns minimal metadata indicating no auth is required
+    @app.route("/.well-known/oauth-protected-resource", methods=["GET"])
+    async def oauth_protected_resource(request: Request):
+        base_url = str(request.base_url).rstrip("/")
+        return JSONResponse({
+            "resource": base_url,
+            "authorization_servers": [],
+            "bearer_methods_supported": [],
+            "scopes_supported": []
+        })
+
+    @app.route("/.well-known/oauth-authorization-server", methods=["GET"])
+    async def oauth_authorization_server(request: Request):
+        base_url = str(request.base_url).rstrip("/")
+        return JSONResponse({
+            "issuer": base_url,
+            "authorization_endpoint": f"{base_url}/oauth/authorize",
+            "token_endpoint": f"{base_url}/oauth/token",
+            "response_types_supported": ["code"],
+            "grant_types_supported": ["authorization_code"],
+            "code_challenge_methods_supported": ["S256"]
+        })
+
     # IMPORTANT: add CORS middleware for browser based clients
     app.add_middleware(
         CORSMiddleware,
