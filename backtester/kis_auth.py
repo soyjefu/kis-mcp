@@ -222,7 +222,7 @@ def auth(svr="prod", product=_cfg["my_prod"], url=None):
     if saved_token is None:  # 기존 발급 토큰 확인이 안되면 발급처리
         url = f"{_cfg[svr]}/oauth2/tokenP"
         res = requests.post(
-            url, data=json.dumps(p), headers=_getBaseHeader()
+            url, data=json.dumps(p), headers=_getBaseHeader(), timeout=10
         )  # 토큰 발급
         rescode = res.status_code
         if rescode == 200:  # 토큰 정상 발급
@@ -281,7 +281,7 @@ def getTREnv():
 def set_order_hash_key(h, p):
     url = f"{getTREnv().my_url}/uapi/hashkey"  # hashkey 발급 API URL
 
-    res = requests.post(url, data=json.dumps(p), headers=h)
+    res = requests.post(url, data=json.dumps(p), headers=h, timeout=10)
     rescode = res.status_code
     if rescode == 200:
         h["hashkey"] = _getResultObject(res.json()).HASH
@@ -459,11 +459,15 @@ def _url_fetch(
         print(f"<header>\n{headers}")
         print(f"<body>\n{params}")
 
-    if postFlag:
-        # if (hashFlag): set_order_hash_key(headers, params)
-        res = requests.post(url, headers=headers, data=json.dumps(params))
-    else:
-        res = requests.get(url, headers=headers, params=params)
+    try:
+        if postFlag:
+            # if (hashFlag): set_order_hash_key(headers, params)
+            res = requests.post(url, headers=headers, data=json.dumps(params), timeout=10)
+        else:
+            res = requests.get(url, headers=headers, params=params, timeout=10)
+    except Exception as e:
+        print(f"Network Request Error: {e}")
+        return APIRespError(500, f"Network Error: {e}")
 
     if res.status_code == 200:
         ar = APIResp(res)
@@ -506,7 +510,7 @@ def auth_ws(svr="prod", product=_cfg["my_prod"]):
     p["secretkey"] = _cfg[ak2]
 
     url = f"{_cfg[svr]}/oauth2/Approval"
-    res = requests.post(url, data=json.dumps(p), headers=_getBaseHeader())  # 토큰 발급
+    res = requests.post(url, data=json.dumps(p), headers=_getBaseHeader(), timeout=10)  # 토큰 발급
     rescode = res.status_code
     if rescode == 200:  # 토큰 정상 발급
         approval_key = _getResultObject(res.json()).approval_key
