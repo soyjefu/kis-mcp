@@ -1,3 +1,5 @@
+[![MseeP.ai Security Assessment Badge](https://mseep.net/pr/soyjefu-kis-mcp-badge.png)](https://mseep.ai/app/soyjefu-kis-mcp)
+
 **[당사에서 제공하는 샘플코드에 대한 유의사항]**
 
 - 샘플 코드는 한국투자증권 Open API(KIS Developers)를 연동하는 예시입니다. 고객님의 개발 부담을 줄이고자 참고용으로 제공되고 있습니다.
