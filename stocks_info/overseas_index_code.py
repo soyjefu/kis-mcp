@@ -37,7 +37,7 @@ def get_overseas_index_master_dataframe(base_dir):
         for row in f:
             if row[0:1] == 'X':
                 rf1 = row[0:len(row) - 14]
-                rf_1 = rf1[0:1]
+                rf1_1 = rf1[0:1]
                 rf1_2 = rf1[1:11]
                 rf1_3 = rf1[11:40].replace(",","")
                 rf1_4 = rf1[40:80].replace(",","").strip()

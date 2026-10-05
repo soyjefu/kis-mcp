@@ -189,6 +189,9 @@ async def connect():
                 await asyncio.sleep(0.5)
                 print(f"Input Command is :{senddata}")
 
+            jsonObject = None
+            aes_key = ""
+            aes_iv = ""
             while True:
 
                 data = await websocket.recv()
